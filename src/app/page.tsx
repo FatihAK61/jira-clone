@@ -12,7 +12,7 @@ export default function Home() {
                 <Button variant="secondary">Zübeydeyi İkinci Sıraya Al</Button>
                 <Button variant="ghost">Zübeydeyi Hayalet Yap</Button>
                 <Button variant="muted">Orospu</Button>
-                <Button variant="tesla">Sikik</Button>
+                <Button variant="tesla">Sikik Kara Amlı</Button>
                 <Input/>
                 <Select/>
             </div>
