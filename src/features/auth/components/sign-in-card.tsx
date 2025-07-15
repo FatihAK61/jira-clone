@@ -8,23 +8,19 @@ import {FcGoogle} from "react-icons/fc";
 import {FaGithub} from "react-icons/fa";
 import {useForm} from "react-hook-form";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-
-const formSchema = z.object({
-    email: z.email("Invalid email address!"),
-    password: z.string().min(8, "Password must be at least 8 characters").max(24, "Password must be at most 24 characters"),
-});
+import {loginSchema} from "@/features/auth/schemas";
 
 const SignInCard = () => {
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
             password: ""
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = (values: z.infer<typeof loginSchema>) => {
         console.log("Form submitted with data:", values);
         // Handle form submission logic here
     };
