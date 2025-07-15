@@ -9,8 +9,11 @@ import {FaGithub} from "react-icons/fa";
 import {useForm} from "react-hook-form";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {loginSchema} from "@/features/auth/schemas";
+import {useLogin} from "@/features/auth/api/use-login";
 
 const SignInCard = () => {
+
+    const {mutate} = useLogin();
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -21,8 +24,7 @@ const SignInCard = () => {
     });
 
     const onSubmit = (values: z.infer<typeof loginSchema>) => {
-        console.log("Form submitted with data:", values);
-        // Handle form submission logic here
+        mutate({json: values});
     };
 
     return (

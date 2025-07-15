@@ -8,17 +8,15 @@ import {FaGithub} from "react-icons/fa";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-
-const formSchema = z.object({
-    name: z.string().min(1, "Name is required").max(50, "Name must be at most 50 characters"),
-    email: z.email("Invalid email address!"),
-    password: z.string().min(8, "Password must be at least 8 characters").max(24, "Password must be at most 24 characters"),
-});
+import {registerSchema} from "@/features/auth/schemas";
+import {useRegister} from "@/features/auth/api/use-register";
 
 const SignUpCard = () => {
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const {mutate} = useRegister();
+
+    const form = useForm<z.infer<typeof registerSchema>>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             name: "",
             email: "",
@@ -26,9 +24,8 @@ const SignUpCard = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log("Form submitted with data:", values);
-        // Handle form submission logic here
+    const onSubmit = (values: z.infer<typeof registerSchema>) => {
+        mutate({json: values});
     };
 
     return (
