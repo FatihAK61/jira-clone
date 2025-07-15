@@ -1,3 +1,4 @@
+import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {InferRequestType, InferResponseType} from "hono";
@@ -17,8 +18,12 @@ export const useRegister = () => {
             return await response.json();
         },
         onSuccess: () => {
+            toast.success("Registration successful. Please check your email to verify your account.");
             router.refresh();
             queryClient.invalidateQueries({queryKey: ["current"]});
         },
+        onError: () => {
+            toast.error("Failed to register. Please check your details and try again.");
+        }
     });
 }
