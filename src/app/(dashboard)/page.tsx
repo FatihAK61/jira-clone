@@ -1,6 +1,5 @@
-import {getCurrent} from "@/features/auth/actions";
-import {UserButton} from "@/features/auth/components/user-button";
 import {redirect} from "next/navigation";
+import {getCurrent} from "@/features/auth/actions";
 
 export default async function Home() {
 
@@ -10,7 +9,7 @@ export default async function Home() {
 
     return (
         <div className="flex gap-4 mt-3 ml-3">
-            <UserButton/>
+            This is the home page.
         </div>
     );
 }
