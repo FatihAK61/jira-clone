@@ -1,3 +1,4 @@
+"use client";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
@@ -13,7 +14,7 @@ import {useLogin} from "@/features/auth/api/use-login";
 
 const SignInCard = () => {
 
-    const {mutate} = useLogin();
+    const {mutate, isPending} = useLogin();
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -46,7 +47,8 @@ const SignInCard = () => {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input {...field} type="email" placeholder="Enter Email Address"/>
+                                        <Input {...field} disabled={isPending} type="email"
+                                               placeholder="Enter Email Address"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -57,12 +59,13 @@ const SignInCard = () => {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input {...field} type="password" placeholder="Enter Password"/>
+                                        <Input {...field} disabled={isPending} type="password"
+                                               placeholder="Enter Password"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
                             )}/>
-                        <Button disabled={false} size="lg" className="w-full">Login</Button>
+                        <Button disabled={isPending} size="lg" className="w-full">Login</Button>
                     </form>
                 </Form>
             </CardContent>
@@ -70,11 +73,11 @@ const SignInCard = () => {
                 <DottedSeperator/>
             </div>
             <CardContent className="p-7 flex flex-col gap-y-4">
-                <Button variant="secondary" size="lg" disabled={false} className="w-full">
+                <Button variant="secondary" size="lg" disabled={isPending} className="w-full">
                     <FcGoogle className="mr-2 size-5"/>
                     Login with Google
                 </Button>
-                <Button variant="secondary" size="lg" disabled={false} className="w-full">
+                <Button variant="secondary" size="lg" disabled={isPending} className="w-full">
                     <FaGithub className="mr-2 size-5"/>
                     Login with Github
                 </Button>

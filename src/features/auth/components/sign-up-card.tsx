@@ -1,3 +1,4 @@
+"use client";
 import {z} from "zod";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {DottedSeperator} from "@/components/custom/dotted-seperator";
@@ -13,7 +14,7 @@ import {useRegister} from "@/features/auth/api/use-register";
 
 const SignUpCard = () => {
 
-    const {mutate} = useRegister();
+    const {mutate, isPending} = useRegister();
 
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
@@ -54,7 +55,7 @@ const SignUpCard = () => {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input {...field} type="text" placeholder="Enter Name"/>
+                                        <Input {...field} disabled={isPending} type="text" placeholder="Enter Name"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -65,7 +66,8 @@ const SignUpCard = () => {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input {...field} type="email" placeholder="Enter Email Address"/>
+                                        <Input {...field} disabled={isPending} type="email"
+                                               placeholder="Enter Email Address"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -76,12 +78,13 @@ const SignUpCard = () => {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input {...field} type="password" placeholder="Enter Password"/>
+                                        <Input {...field} disabled={isPending} type="password"
+                                               placeholder="Enter Password"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
                             )}/>
-                        <Button disabled={false} size="lg" className="w-full">Sign Up</Button>
+                        <Button disabled={isPending} size="lg" className="w-full">Register</Button>
                     </form>
                 </Form>
             </CardContent>
@@ -89,11 +92,11 @@ const SignUpCard = () => {
                 <DottedSeperator/>
             </div>
             <CardContent className="p-7 flex flex-col gap-y-4">
-                <Button variant="secondary" size="lg" disabled={false} className="w-full">
+                <Button variant="secondary" size="lg" disabled={isPending} className="w-full">
                     <FcGoogle className="mr-2 size-5"/>
                     SignUp with Google
                 </Button>
-                <Button variant="secondary" size="lg" disabled={false} className="w-full">
+                <Button variant="secondary" size="lg" disabled={isPending} className="w-full">
                     <FaGithub className="mr-2 size-5"/>
                     SignUp with Github
                 </Button>
