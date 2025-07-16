@@ -2,16 +2,46 @@ import {Hono} from "hono";
 import {zValidator} from "@hono/zod-validator";
 
 import {sessionMiddleware} from "@/lib/session-middleware";
-import {ID} from "node-appwrite";
-import {DATABASE_ID, WORKSPACES_ID} from "@/config";
+import {ID, Query} from "node-appwrite";
+import {DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACES_ID} from "@/config";
 import {createWorkspaceSchema} from "@/features/workspaces/schemas";
 
 const app = new Hono()
-    .post("/", zValidator("json", createWorkspaceSchema), sessionMiddleware, async (c) => {
+    .get("/", sessionMiddleware, async (c) => {
         const databases = c.get("databases");
         const user = c.get("user");
 
-        const {name} = c.req.valid("json");
+        if (!user) {
+            return c.json({error: "Unauthorized"}, 401);
+        }
+
+        const workspaces = await databases.listDocuments(
+            DATABASE_ID,
+            WORKSPACES_ID,
+            [Query.equal("userId", user.$id)]
+        );
+
+        return c.json({data: workspaces});
+    })
+    .post("/", zValidator("form", createWorkspaceSchema), sessionMiddleware, async (c) => {
+        const databases = c.get("databases");
+        const storage = c.get("storage");
+        const user = c.get("user");
+
+        const {name, image} = c.req.valid("form");
+
+        let uploadedImageUrl: string | undefined;
+
+        if (image instanceof File) {
+            const file = await storage.createFile(
+                IMAGES_BUCKET_ID,
+                ID.unique(),
+                image
+            );
+            const arrayBuffer = await storage.getFilePreview(IMAGES_BUCKET_ID, file.$id);
+
+            uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+        }
 
         const workspace = await databases.createDocument(
             DATABASE_ID,
@@ -19,7 +49,8 @@ const app = new Hono()
             ID.unique(),
             {
                 name,
-                userId: user.$id
+                userId: user.$id,
+                imageUrl: uploadedImageUrl
             }
         )
 

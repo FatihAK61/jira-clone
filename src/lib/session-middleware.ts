@@ -48,4 +48,4 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(async (c, n
 
     await next();
 
-})
+});

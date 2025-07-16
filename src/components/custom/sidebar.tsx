@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import WorkspaceSwitcher from "@/components/custom/workspace-switcher";
 import {DottedSeperator} from "@/components/custom/dotted-seperator";
 import Navigation from "@/components/custom/navigation";
 
@@ -9,6 +10,8 @@ const Sidebar = () => {
             <Link href="/">
                 <Image priority src="/logo.svg" alt="Logo" width={153} height={38} className="mb-6"/>
             </Link>
+            <DottedSeperator/>
+            <WorkspaceSwitcher/>
             <DottedSeperator/>
             <Navigation/>
         </aside>
