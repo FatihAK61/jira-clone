@@ -3,22 +3,37 @@ import {zValidator} from "@hono/zod-validator";
 
 import {sessionMiddleware} from "@/lib/session-middleware";
 import {ID, Query} from "node-appwrite";
-import {DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACES_ID} from "@/config";
+import {DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACES_ID} from "@/config";
 import {createWorkspaceSchema} from "@/features/workspaces/schemas";
+import {MemberRole} from "@/features/members/types";
+import {generateInviteCode} from "@/lib/utils";
 
 const app = new Hono()
     .get("/", sessionMiddleware, async (c) => {
         const databases = c.get("databases");
         const user = c.get("user");
 
-        if (!user) {
+        if (!user)
             return c.json({error: "Unauthorized"}, 401);
-        }
+
+        const members = await databases.listDocuments(
+            DATABASE_ID,
+            MEMBERS_ID,
+            [Query.equal("userId", user.$id)],
+        );
+
+        if (members.total === 0)
+            return c.json({data: {documents: [], total: 0}});
+
+        const workspaceIds = members.documents.map((member) => member.workspaceId);
 
         const workspaces = await databases.listDocuments(
             DATABASE_ID,
             WORKSPACES_ID,
-            [Query.equal("userId", user.$id)]
+            [
+                Query.orderDesc(("$createdAt")),
+                Query.contains("$id", workspaceIds),
+            ]
         );
 
         return c.json({data: workspaces});
@@ -50,7 +65,19 @@ const app = new Hono()
             {
                 name,
                 userId: user.$id,
-                imageUrl: uploadedImageUrl
+                imageUrl: uploadedImageUrl,
+                inviteCode: generateInviteCode(10)
+            }
+        )
+
+        await databases.createDocument(
+            DATABASE_ID,
+            MEMBERS_ID,
+            ID.unique(),
+            {
+                workspaceId: workspace.$id,
+                userId: user.$id,
+                role: MemberRole.ADMIN
             }
         )
 
