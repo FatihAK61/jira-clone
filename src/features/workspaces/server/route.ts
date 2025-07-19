@@ -85,52 +85,72 @@ const app = new Hono()
         return c.json({data: workspace});
     })
     .patch("/:workspaceId", zValidator("form", updateWorkspaceSchema), sessionMiddleware, async (c) => {
-            const databases = c.get("databases");
-            const storage = c.get("storage");
-            const user = c.get("user");
+        const databases = c.get("databases");
+        const storage = c.get("storage");
+        const user = c.get("user");
 
-            const {workspaceId} = c.req.param();
-            const {name, image} = c.req.valid("form");
+        const {workspaceId} = c.req.param();
+        const {name, image} = c.req.valid("form");
 
-            const member = await getMember({
-                databases,
-                workspaceId,
-                userId: user.$id
-            });
+        const member = await getMember({
+            databases,
+            workspaceId,
+            userId: user.$id
+        });
 
-            if (!user)
-                return c.json({error: "Unauthorized"}, 401);
+        if (!user)
+            return c.json({error: "Unauthorized"}, 401);
 
-            if (!member || member.role !== MemberRole.ADMIN)
-                return c.json({error: "Unauthorized"}, 401);
+        if (!member || member.role !== MemberRole.ADMIN)
+            return c.json({error: "Unauthorized"}, 401);
 
-            let uploadedImageUrl: string | undefined;
+        let uploadedImageUrl: string | undefined;
 
-            if (image instanceof File) {
-                const file = await storage.createFile(
-                    IMAGES_BUCKET_ID,
-                    ID.unique(),
-                    image
-                );
-                const arrayBuffer = await storage.getFilePreview(IMAGES_BUCKET_ID, file.$id);
-
-                uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
-            } else {
-                uploadedImageUrl = image;
-            }
-
-            const updatedWorkspace = await databases.updateDocument(
-                DATABASE_ID,
-                WORKSPACES_ID,
-                workspaceId,
-                {
-                    name,
-                    imageUrl: uploadedImageUrl
-                }
+        if (image instanceof File) {
+            const file = await storage.createFile(
+                IMAGES_BUCKET_ID,
+                ID.unique(),
+                image
             );
+            const arrayBuffer = await storage.getFilePreview(IMAGES_BUCKET_ID, file.$id);
 
-            return c.json({data: updatedWorkspace});
+            uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+        } else {
+            uploadedImageUrl = image;
         }
-    );
+
+        const updatedWorkspace = await databases.updateDocument(
+            DATABASE_ID,
+            WORKSPACES_ID,
+            workspaceId,
+            {
+                name,
+                imageUrl: uploadedImageUrl
+            }
+        );
+
+        return c.json({data: updatedWorkspace});
+    })
+    .delete("/:workspaceId", sessionMiddleware, async (c) => {
+        const databases = c.get("databases");
+        const user = c.get("user");
+
+        const {workspaceId} = c.req.param();
+
+        const member = await getMember({
+            databases,
+            workspaceId,
+            userId: user.$id
+        });
+
+        if (!member || member.role !== MemberRole.ADMIN)
+            return c.json({error: "Unauthorized"}, 401);
+
+        // TODO: delete members, projects, tasks, etc. related to the workspace
+
+        await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
+
+        return c.json({data: {$id: workspaceId}});
+    });
 
 export default app;
