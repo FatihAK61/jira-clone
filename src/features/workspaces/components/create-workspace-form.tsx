@@ -6,8 +6,9 @@ import {useRouter} from "next/navigation";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useCreateWorkspace} from "@/features/workspaces/api/use-create-workspace";
 
-import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {cn} from "@/lib/utils";
 import Image from "next/image";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
@@ -124,7 +125,8 @@ export const CreateWorkspaceForm = ({onCancel}: CreateWorkspaceFormProps) => {
                         </div>
                         <DottedSeperator className="py-7"/>
                         <div className="flex items-center justify-between">
-                            <Button type="button" disabled={isPending} size="lg" variant="secondary" onClick={onCancel}>
+                            <Button type="button" disabled={isPending} size="lg" variant="secondary" onClick={onCancel}
+                                    className={cn(!onCancel && "invisible")}>
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={isPending} size="lg">
