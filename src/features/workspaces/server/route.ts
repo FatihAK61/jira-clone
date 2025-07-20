@@ -148,7 +148,7 @@ const app = new Hono()
         if (!member || member.role !== MemberRole.ADMIN)
             return c.json({error: "Unauthorized"}, 401);
 
-        // TODO: delete members, projects, tasks, etc. related to the workspace
+        // TODO: delete members, projects.tsx, tasks, etc. related to the workspace
 
         await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
 

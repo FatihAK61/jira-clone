@@ -3,6 +3,7 @@ import Image from "next/image";
 import WorkspaceSwitcher from "@/components/custom/workspace-switcher";
 import {DottedSeperator} from "@/components/custom/dotted-seperator";
 import Navigation from "@/components/custom/navigation";
+import Projects from "@/components/custom/projects";
 
 const Sidebar = () => {
     return (
@@ -14,6 +15,8 @@ const Sidebar = () => {
             <WorkspaceSwitcher/>
             <DottedSeperator/>
             <Navigation/>
+            <DottedSeperator/>
+            <Projects/>
         </aside>
     );
 }

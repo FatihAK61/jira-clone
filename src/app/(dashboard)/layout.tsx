@@ -2,6 +2,7 @@ import React, {Suspense} from "react";
 import Sidebar from "@/components/custom/sidebar";
 import Navbar from "@/components/custom/navbar";
 import {CreateWorkspaceModal} from "@/features/workspaces/components/create-workspace-modal";
+import {CreateProjectModal} from "@/features/projects/components/create-project-modal";
 import DashboardLoading from "@/app/(dashboard)/loading";
 
 interface DashboardLayoutProps {
@@ -13,6 +14,7 @@ const DashboardLayout = ({children}: DashboardLayoutProps) => {
         <Suspense fallback={<DashboardLoading/>}>
             <div className="min-h-screen">
                 <CreateWorkspaceModal/>
+                <CreateProjectModal/>
                 <div className="flex w-full h-full">
                     <div className="fixed left-0 top-0 hidden lg:block lg:w-[264px] h-full overflow-y-auto">
                         <Sidebar/>
