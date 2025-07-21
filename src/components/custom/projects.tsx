@@ -11,7 +11,6 @@ import {useCreateProjectModal} from "@/features/projects/hooks/use-create-projec
 import {ProjectAvatar} from "@/features/projects/components/project-avatar";
 
 const Projects = () => {
-    const projectId = "1";
     const pathname = usePathname();
     const {open} = useCreateProjectModal();
     const workspaceId = useWorkspaceId();
@@ -26,7 +25,7 @@ const Projects = () => {
             </div>
             {
                 data?.documents.map((project) => {
-                    const href = `/workspaces/${workspaceId}/projects/${projectId}`;
+                    const href = `/workspaces/${workspaceId}/projects/${project.$id}`;
                     const isActive = pathname === href;
 
                     return (
@@ -34,7 +33,7 @@ const Projects = () => {
                             <div
                                 className={cn("flex items-center gap-2.5 p-2.5 rounded-md hover:opacity-75 transition cursor-pointer text-neutral-500",
                                     isActive && "bg-white shadow-sm hover:opacity-100 text-primary")}>
-                                <ProjectAvatar name={project.name} image={project.imageUrl}/>
+                                <ProjectAvatar name={project.name} image={project.imageUrl} fallbackClassName={cn("")}/>
                                 <span className="truncate">{project.name}</span>
                             </div>
                         </Link>

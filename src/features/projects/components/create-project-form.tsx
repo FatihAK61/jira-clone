@@ -17,6 +17,8 @@ import {ImageIcon} from "lucide-react";
 import {useCreateProject} from "@/features/projects/api/use-create-projects";
 import {useWorkspaceId} from "@/features/workspaces/hooks/use-workspace-id";
 
+export const createProjectFormSchema = createProjectSchema.omit({workspaceId: true});
+
 interface CreateProjectFormProps {
     onCancel?: () => void;
 }
@@ -26,13 +28,13 @@ export const CreateProjectForm = ({onCancel}: CreateProjectFormProps) => {
     //const router = useRouter();
     const {mutate, isPending} = useCreateProject();
     const inputRef = useRef<HTMLInputElement>(null);
-    const form = useForm<z.infer<typeof createProjectSchema>>({
-        resolver: zodResolver(createProjectSchema.omit({workspaceId: true})),
+    const form = useForm<z.infer<typeof createProjectFormSchema>>({
+        resolver: zodResolver(createProjectFormSchema),
         defaultValues: {
             name: ""
         }
     });
-    const onSubmit = (values: z.infer<typeof createProjectSchema>) => {
+    const onSubmit = (values: z.infer<typeof createProjectFormSchema>) => {
         const finalValues = {
             ...values,
             workspaceId,
