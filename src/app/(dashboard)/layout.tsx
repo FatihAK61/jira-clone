@@ -3,7 +3,7 @@ import Sidebar from "@/components/custom/sidebar";
 import Navbar from "@/components/custom/navbar";
 import {CreateWorkspaceModal} from "@/features/workspaces/components/create-workspace-modal";
 import {CreateProjectModal} from "@/features/projects/components/create-project-modal";
-import DashboardLoading from "@/app/(dashboard)/loading";
+import LoadingPage from "@/app/loading";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({children}: DashboardLayoutProps) => {
     return (
-        <Suspense fallback={<DashboardLoading/>}>
+        <Suspense fallback={<LoadingPage/>}>
             <div className="min-h-screen">
                 <CreateWorkspaceModal/>
                 <CreateProjectModal/>
