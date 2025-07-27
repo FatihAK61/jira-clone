@@ -25,7 +25,7 @@ const TaskViewSwitcher = () => {
                     </Button>
                 </div>
                 <DottedSeperator className="my-4"/>
-                {/* Content for each tab would go here, e.g., TaskTable, TaskKanban, TaskCalendar */}
+                Data filters
                 <DottedSeperator className="my-4"/>
                 <>
                     <TabsContent value="table" className="mt-0">
