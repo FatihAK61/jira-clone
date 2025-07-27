@@ -29,7 +29,7 @@ interface EditProjectFormProps {
 export const EditProjectForm = ({onCancel, initialValues}: EditProjectFormProps) => {
     const router = useRouter();
     const {mutate, isPending} = useUpdateProject();
-    const {mutate: deleteProject, isPending: isDeletingProject} = useDeleteProject();
+    const {mutate: deleteProject} = useDeleteProject();
     const [DeleteDialog, confirmDelete] = useConfirm("Delete Workspace", "Are you sure you want to delete this workspace? This action cannot be undone.", "destructive");
     const inputRef = useRef<HTMLInputElement>(null);
     const form = useForm<z.infer<typeof updateProjectSchema>>({
