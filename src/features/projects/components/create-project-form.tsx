@@ -16,6 +16,7 @@ import {DottedSeperator} from "@/components/custom/dotted-seperator";
 import {ImageIcon} from "lucide-react";
 import {useCreateProject} from "@/features/projects/api/use-create-projects";
 import {useWorkspaceId} from "@/features/workspaces/hooks/use-workspace-id";
+import {useRouter} from "next/navigation";
 
 export const createProjectFormSchema = createProjectSchema.omit({workspaceId: true});
 
@@ -25,7 +26,7 @@ interface CreateProjectFormProps {
 
 export const CreateProjectForm = ({onCancel}: CreateProjectFormProps) => {
     const workspaceId = useWorkspaceId();
-    //const router = useRouter();
+    const router = useRouter();
     const {mutate, isPending} = useCreateProject();
     const inputRef = useRef<HTMLInputElement>(null);
     const form = useForm<z.infer<typeof createProjectFormSchema>>({
@@ -41,12 +42,12 @@ export const CreateProjectForm = ({onCancel}: CreateProjectFormProps) => {
             image: values.image instanceof File ? values.image : ""
         }
         mutate({form: finalValues}, {
-            onSuccess: () => {
+            onSuccess: ({data}) => {
                 form.reset();
-                // TODO: redirect to project screen
+                router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
             }
         });
-    }
+    };
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file)
